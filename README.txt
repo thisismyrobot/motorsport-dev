@@ -5,9 +5,9 @@ This is just a sandbox for testing communication between Python and a small seri
 
 The GPS unit: http://www.sparkfun.com/commerce/product_info.php?products_id=8936
 
-Currently, uses Python to host a web server - with google maps displaying data from the gps unit via ajax calls.
+Currently, uses python as a server to host 2 pages. The first is a google-maps drive map display. The second page returns values from the gps unit (as json) to ajax calls from the first page.
 
 Future ideas
 ------------
 
-Also, will be using pyglet to do the visualisation - maybe even link into the google api for maps...
+Would like a mapping source that is not javascript-driven - so can use pyglet opengl for visualisations from web-sourced static images. 
