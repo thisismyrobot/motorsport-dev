@@ -17,20 +17,20 @@
                 map.setMapType(G_SATELLITE_MAP);
                 map.enableContinuousZoom();
                 map.enableScrollWheelZoom();
-                gps_update(map, x, y);
+                gps_update(map);
             }
-            function gps_update(map, x, y)
+            function gps_update(map)
             {
+                do_ajax(map);
                 setTimeout(function(){
-                    do_ajax(map, x, y);
+                    gps_update(map);
                 }, 2500);
             }
             function map_update(map, x, y)
             {
                 map.panTo(new google.maps.LatLng(x, y));
-                gps_update(map, x, y);
             }
-            function do_ajax(map, x, y)
+            function do_ajax(map)
             {
                 var url = "gps";
                 var the_object;
