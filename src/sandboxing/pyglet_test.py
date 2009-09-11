@@ -1,8 +1,9 @@
 import pyglet
 import pyglet.window
 import pyglet.graphics
+import pyglet.sprite
 
-class gps_map:
+class GPSMap:
     red_dots = pyglet.graphics.vertex_list(1,
         ('v2i', (10, 15)),
         ('c3B', (255, 0, 0))
@@ -33,7 +34,7 @@ class gps_map:
 
 window = pyglet.window.Window()
 fps_display = pyglet.clock.ClockDisplay()
-map = gps_map()
+map = GPSMap()
 
 @window.event
 def on_draw():
