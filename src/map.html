@@ -9,28 +9,33 @@
             function init()
             {
                 map = new google.maps.Map2(document.getElementById("map"));
-                x = 37.4419;
-                y = -122.1419;
-                map.setCenter(new google.maps.LatLng(x, y), 21);
-                map.disableDragging();
+                map.setCenter(new google.maps.LatLng(0, 0), 3);
                 map.addMapType(G_SATELLITE_MAP);
                 map.setMapType(G_SATELLITE_MAP);
-                map.enableContinuousZoom();
                 map.enableScrollWheelZoom();
-                gps_update(map);
+                map.addControl(new GLargeMapControl());
+                marker = new GMarker(new google.maps.LatLng(0, 0));
+                marker.disableDragging();
+                GEvent.addListener(marker, 'dblclick', function(latlng) {
+                    map.setCenter(latlng, 20);
+                });
+                map.addOverlay(marker);
+                marker.hide();
+                gps_update(map, marker);
             }
-            function gps_update(map)
+            function gps_update(map, marker)
             {
-                do_ajax(map);
+                do_ajax(map, marker);
                 setTimeout(function(){
-                    gps_update(map);
-                }, 2500);
+                    gps_update(map, marker);
+                }, 5000);
             }
-            function map_update(map, x, y)
+            function map_update(map, marker, x, y)
             {
-                map.panTo(new google.maps.LatLng(x, y));
+                marker.show();
+                marker.setLatLng(new google.maps.LatLng(x, y));
             }
-            function do_ajax(map)
+            function do_ajax(map, marker)
             {
                 var url = "gps";
                 var the_object;
@@ -41,9 +46,7 @@
                     if ( http_request.readyState == 4 ) {
                         if ( http_request.status == 200 ) {
                             the_object = eval( "(" + http_request.responseText + ")" );
-                            map_update(map, the_object[0], the_object[1]);
-                        } else {
-                            alert( "Didn't get 200!" );
+                            map_update(map, marker, the_object[0], the_object[1]);
                         }
                         http_request = null;
                     }
@@ -65,57 +68,9 @@
                 left:0;
                 top:0;
             }
-            #n
-            {
-                position:absolute;
-                width:2px;
-                height:50px;
-                background-color:red;
-                left:50%;
-                top:50%;
-                margin-left:-1px;
-                margin-top:-55px;
-            }
-            #s
-            {
-                position:absolute;
-                width:2px;
-                height:50px;
-                background-color:red;
-                left:50%;
-                top:50%;
-                margin-left:-1px;
-                margin-top:5px;
-            }
-            #e
-            {
-                position:absolute;
-                width:50px;
-                height:2px;
-                background-color:red;
-                left:50%;
-                top:50%;
-                margin-left:5px;
-                margin-top:-1px;
-            }
-            #w
-            {
-                position:absolute;
-                width:50;
-                height:2px;
-                background-color:red;
-                left:50%;
-                top:50%;
-                margin-left:-55px;
-                margin-top:-1px;
-            }
         </style>
     </head>
     <body>
         <div id="map"></div>
-        <div id="n"></div>
-        <div id="s"></div>
-        <div id="e"></div>
-        <div id="w"></div>
     </body>
 </html>
