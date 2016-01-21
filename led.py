@@ -47,6 +47,7 @@ FONT = {
     ' ': 0xff,
     '.': 0x7f,
     '-': 0xbf,
+    ':': 0xf6,
 }
 
 
@@ -56,6 +57,42 @@ class LED(object):
     def __init__(self):
         self._spi = spidev.SpiDev()
         self._spi.open(0, 0)
+
+    @staticmethod
+    def seven_code(on_segments):
+        """ Return byte based on "on" segments in string form.
+
+            E.g (for a zero):
+                'ABCDEF' = 0xc0
+
+            Options are ABCDEFGP.
+
+            ABCDEF are the outside segments, starting at the top, in a
+            clockwise direction.
+
+            G is the horizontal bar.
+
+            P is the decimal point.
+        """
+        b = 0xff
+        for s in on_segments:
+            if s == 'A':
+                b = b & 0xfe
+            elif s == 'B':
+                b = b & 0xfd
+            elif s == 'C':
+                b = b & 0xfb
+            elif s == 'D':
+                b = b & 0xf7
+            elif s == 'E':
+                b = b & 0xef
+            elif s == 'F':
+                b = b & 0xdf
+            elif s == 'G':
+                b = b & 0xbf
+            elif s == 'P':
+                b = b & 0x7f
+        return b
 
     def set(self, chars, clear=True):
         """ Set the display.
@@ -83,4 +120,4 @@ class LED(object):
 
 if __name__ == '__main__':
     led = LED()
-    led.set('LED.01234')
+    led.set('LED :-)')
