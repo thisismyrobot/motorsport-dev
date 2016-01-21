@@ -1,22 +1,29 @@
+""" Multi-GPS multiplexer.
+"""
 import multiprocessing
 import serial.tools.list_ports
-import time
 
 
 def reader(queue, path):
     """ Process to read from a comm port and put lines on a queue.
     """
+    fails = 0
+
     # Connect at 9600 baud
     conn = serial.Serial(path, timeout=1)
 
+    # Set 5Hz update rate
+    conn.write(b'\xb5\x62\x06\x08\x06\x00\xc8\x00\x01\x00\x01\x00\xde\x6a')
+
     # Push data on to the queue.
-    while True:
+    while fails < 10:
         # Check we have a GPS device
-        line = conn.readline()
+        line = conn.readline().strip()
         if not line.startswith('$GP'):
-            return
-        if line.startswith('$GPVTG'):
-            queue.put(':'.join((path, line)))
+            fails += 1
+            continue
+        fails = 0
+        queue.put(line)
 
 
 def writer(queue):
@@ -48,4 +55,5 @@ def go():
 
 
 if __name__ == '__main__':
+
     go()
