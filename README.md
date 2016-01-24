@@ -2,12 +2,25 @@
 
 Primary project is 'race-pi' for real-time telemetry for track driving.
 
+## NOTE
+
+This all requires a fairly specific hardware setup that I haven't yet
+documented...
+
 ## Install
 
 On Raspberry Pi:
 
     cd race-pi
-    python setup.py install
+    sudo python setup.py install
+
+## Run
+
+This launch.py script coordinates the different modules etc. This is what
+you'd no-doubt change the most for your hardware setup.
+
+    cd race-pi
+    python scripts/launch.py
 
 ## py-gps
 

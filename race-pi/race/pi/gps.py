@@ -36,7 +36,7 @@ def writer(queue):
         if line.startswith('$GPVTG'):
             kph = line.split(',')[7]
             if kph == '':
-                led_disp.set('NO GPS')
+                led_disp.set('NO LOCK')
             else:
                 led_disp.set('{} kph'.format(kph))
 
