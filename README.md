@@ -2,6 +2,13 @@
 
 Primary project is 'race-pi' for real-time telemetry for track driving.
 
+## Install
+
+On Raspberry Pi:
+
+    cd race-pi
+    python setup.py install
+
 ## py-gps
 
 An old project for rendering GPS location on Google Maps.
