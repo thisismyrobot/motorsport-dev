@@ -5,9 +5,34 @@ import os
 import pty
 
 import race.pi.multiserial
+import race.pi.led
+
+
+# Set up a helper to write the GPS data to the LED display (and log to the
+# console).
+def display_update(display, queue):
+    while True:
+        line = queue.get().strip()
+        print line
+        if line.startswith('$GPVTG'):
+            kph = line.split(',')[7]
+            if kph == '':
+                display.set('NO LOCK')
+            else:
+                display.set('{} kph'.format(kph))
 
 
 if __name__ == '__main__':
+
+    # Create a LED display instance
+    display = race.pi.led.LED()
+    display.set('NO GPS')
+
+    # Create the logging queue to grab data from the serial lines.
+    log_queue = multiprocessing.Queue()
+    multiprocessing.Process(
+        target=display_update, args=(display, log_queue,)
+    ).start()
 
     # We're using ublox GPS units so we'll set them up after connection here.
     def ublox_setup(conn):
@@ -16,13 +41,6 @@ if __name__ == '__main__':
 
     # Create an pty to send to so that
     paths = map(os.ttyname, pty.openpty())
-
-    # Set up a console logger for testing
-    def log(queue):
-        while True:
-            print queue.get().strip()
-    log_queue = multiprocessing.Queue()
-    multiprocessing.Process(target=log, args=(log_queue,)).start()
 
     # Set up the multi-serial multiplexer, echoing all serial data out the
     # onboard serial port. In my case this is attached to a OpenLog.
