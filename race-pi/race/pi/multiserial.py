@@ -2,7 +2,7 @@
 """
 import multiprocessing
 import Queue
-import serial
+import serial.tools.list_ports
 import time
 
 
