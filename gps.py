@@ -1,5 +1,6 @@
 """ Multi-GPS multiplexer.
 """
+import led
 import multiprocessing
 import serial.tools.list_ports
 
@@ -29,8 +30,15 @@ def reader(queue, path):
 def writer(queue):
     """ Process to read from a queue.
     """
+    led_disp = led.LED()
     while True:
-        print queue.get()
+        line = queue.get()
+        if line.startswith('$GPVTG'):
+            kph = line.split(',')[7]
+            if kph == '':
+                led_disp.set('NO GPS')
+            else:
+                led_disp.set('{} kph'.format(kph))
 
 
 def go():
