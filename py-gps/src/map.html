@@ -1,0 +1,76 @@
+<html>
+    <head>
+        <script type="text/javascript"
+                src="http://www.google.com/jsapi?key=ABQIAAAAG2BxJeJYcOWn31KHWPMCjBQnxbEyd_XxP_y4GU5ArUCmO5ZslBTQSN_NmoKoApGig3y5oTBgAnN9qw">
+        </script>
+        <script>
+            google.load("maps", "2");
+
+            function init()
+            {
+                map = new google.maps.Map2(document.getElementById("map"));
+                map.setCenter(new google.maps.LatLng(0, 0), 3);
+                map.addMapType(G_SATELLITE_MAP);
+                map.setMapType(G_SATELLITE_MAP);
+                map.enableScrollWheelZoom();
+                map.addControl(new GLargeMapControl());
+                marker = new GMarker(new google.maps.LatLng(0, 0));
+                marker.disableDragging();
+                GEvent.addListener(marker, 'dblclick', function(latlng) {
+                    map.setCenter(latlng, 20);
+                });
+                map.addOverlay(marker);
+                marker.hide();
+                gps_update(map, marker);
+            }
+            function gps_update(map, marker)
+            {
+                do_ajax(map, marker);
+                setTimeout(function(){
+                    gps_update(map, marker);
+                }, 5000);
+            }
+            function map_update(map, marker, x, y)
+            {
+                marker.show();
+                marker.setLatLng(new google.maps.LatLng(x, y));
+            }
+            function do_ajax(map, marker)
+            {
+                var url = "gps";
+                var the_object;
+                var http_request = new XMLHttpRequest();
+                http_request.open( "GET", url, true );
+                http_request.send(null);
+                http_request.onreadystatechange = function () {
+                    if ( http_request.readyState == 4 ) {
+                        if ( http_request.status == 200 ) {
+                            the_object = eval( "(" + http_request.responseText + ")" );
+                            map_update(map, marker, the_object[0], the_object[1]);
+                        }
+                        http_request = null;
+                    }
+                };
+
+            }
+            google.setOnLoadCallback(init);
+        </script>
+        <style>
+            body{
+                margin:0;
+                padding:0;
+            }
+            #map
+            {
+                width:100%;
+                height:100%;
+                position:absolute;
+                left:0;
+                top:0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+    </body>
+</html>
