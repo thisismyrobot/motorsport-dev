@@ -14,8 +14,9 @@ def display_update(display, queue):
     while True:
         line = queue.get().strip()
         print line
-        if line.startswith('$GPVTG'):
-            kph = line.split(',')[7]
+        data = line.split(':')[1]
+        if data.startswith('$GPVTG'):
+            kph = data.split(',')[7]
             if kph == '':
                 display.set('NO LOCK')
             else:
